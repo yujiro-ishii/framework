@@ -26,5 +26,40 @@ class Session
             return $_SESSION[$name];
         }
 
+        return $default;
     }
+
+    public function remove($name)
+    {
+        unset($_SESSION[$name]);
+    }
+
+    public function clear()
+    {
+        $_SESSION = array();   //セッションの初期化
+    }
+
+    public function regenerate($destroy = true)
+    {
+        if(!self::$sessionIdRegenerated){
+            session_regenerate_id($destroy);       
+
+            self::$sessionIdRegenerated = true;
+        }
+    }
+
+    // ログイン状態を制御 
+
+    public function setAuthenticated($bool)
+    {
+        $this->set('_authenticated', (bool)$bool);
+
+        $this->regenerate();
+    }
+
+    public function isAuthenticated()
+    {
+        return $this->get('_authenticated, false');
+    }
+
 }
